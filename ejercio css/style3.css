@@ -1,0 +1,9 @@
+.center {
+    text-align: center;
+}
+
+#encabezado {
+    background-color: #fce7ec;
+    font-weight: bold;
+    color: blue;
+}

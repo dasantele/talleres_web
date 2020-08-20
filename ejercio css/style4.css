@@ -1,0 +1,13 @@
+.verde {
+    background-color: #a7fc58;
+}
+
+#edad {
+    color: red;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+body {
+    font-size: larger;
+}
