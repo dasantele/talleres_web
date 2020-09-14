@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>    
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     <meta http-equiv="x-ua-compatible" content="ie=edge">
+     <meta name="description" content="Ejercicio de Bootstrap de Daniel Santiago Tenjo Leal">
+
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+     <title>Ejercicio Bootstrap</title>
+</head>
+
+<body>
+
+    <h2>Events</h2>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Events</th>
+            <th scope="col">Squirrel</th>
+          </tr>
+        </thead>
+        <tbody id="datos">
+          
+        </tbody>
+    </table>
+
+    <h2>Events</h2>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Events</th>
+            <th scope="col">Squirrel</th>
+          </tr>
+        </thead>
+        <tbody id="correlation">
+          
+        </tbody>
+    </table>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script>
+    const promesa1= new Promise((resolve, reject) =>{
+    let req1 =new XMLHttpRequest();
+    req1.open('GET', 'https://gist.githubusercontent.com/josejbocanegra/b1873c6b7e732144355bb1627b6895ed/raw/d91df4c8093c23c41dce6292d5c1ffce0f01a68b/newDatalog.json');
+    req1.onload =function(){
+      if(req1.status == 200){
+        resolve(req1.response)
+    } else{
+      reject(req1.response)
+      }
+    }
+    req1.send();
+    })
+
+    .then((message) => {
+        let arreglo=JSON.parse(message)
+        var tblbody = document.getElementById("datos");
+        var list=[];
+
+        for (let i = 0; i < arreglo.length; i++) {
+            arreglo[i].events.forEach(element => {
+                if(list.find(x => x.name==element)==undefined)
+                {
+                    var objeto={name:element, tp:0,tn:0,fp:0,fn:0};
+                    list.push(objeto);
+                }
+            });  
+        }
+        
+
+        for (var i = 0; i < arreglo.length; i++) {
+        var hilera = document.createElement("tr");
+        var istrue=false;
+        
+        for (var j = 0; j < 3; j++) {
+            var celda = document.createElement("td");
+            var textoCelda = document.createElement("p");
+            if(j==0)
+            {
+                textoCelda.textContent = ""+(i+1);
+            }
+            if(j==1)
+            {
+                textoCelda.textContent = arreglo[i].events;  
+            }
+            if(j==2)
+            {
+                textoCelda.textContent= arreglo[i].squirrel;
+                istrue=arreglo[i].squirrel;
+            }
+            if(textoCelda.textContent=='true')
+            {
+                hilera.setAttribute("class","table-danger")   
+            }
+            
+            celda.appendChild(textoCelda);
+            hilera.appendChild(celda);
+         
+        }
+         if(istrue==true)
+         {
+            arreglo[i].events.forEach(element => {
+                    list.find(x => x.name==element).tp++;
+                    list.find(x => x.name==element).fp--;
+                })
+                list.forEach(element => {
+                    element.fp++;
+                })
+         }
+         else{
+            arreglo[i].events.forEach(element => {
+                list.find(x => x.name==element).fn++;
+                list.find(x => x.name==element).tn--;
+            })
+            list.forEach(element => {
+                    element.tn++;
+            })
+        }
+ 
+        tblbody.appendChild(hilera);
+        }
+        
+    })
+
+    var tblbody2 = document.getElementById("correlation");
+    for (var i = 0; i < list.length; i++) {
+        var hilera = document.createElement("tr");
+        for (var j = 0; j < 3; j++) {
+            var celda = document.createElement("td");
+            var textoCelda = document.createElement("p");
+
+            if(j==0)
+            {
+                textoCelda.textContent = ""+(i+1);
+            }
+            if(j==1)
+            {
+                textoCelda.textContent = list[i].name;  
+            }
+            if(j==3)
+            {
+                let mcc = (list[i].tp*list[i].tn - list[i].fp*list[i].fn)/Math.sqrt((list[i].tp+list[i].fp)(list[i].tp+list[i].fn)(list[i].tn+list[i].fp)*(list[i].tn+list[i].fn));
+                textoCelda.textContent = list[i].name;  
+            }
+
+            celda.appendChild(textoCelda);
+            hilera.appendChild(celda);
+        }
+
+        tblbody2.appendChild(hilera);
+    }
+
+    </script>
+</body>
