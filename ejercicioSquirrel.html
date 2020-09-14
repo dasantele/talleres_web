@@ -32,8 +32,8 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Events</th>
-            <th scope="col">Squirrel</th>
+            <th scope="col">Event</th>
+            <th scope="col">Correlation</th>
           </tr>
         </thead>
         <tbody id="correlation">
@@ -68,7 +68,7 @@
             arreglo[i].events.forEach(element => {
                 if(list.find(x => x.name==element)==undefined)
                 {
-                    var objeto={name:element, tp:0,tn:0,fp:0,fn:0};
+                    var objeto={name:element, tp:0,tn:0,fp:0,fn:0, mcc:0};
                     list.push(objeto);
                 }
             });  
@@ -76,12 +76,12 @@
         
 
         for (var i = 0; i < arreglo.length; i++) {
-        var hilera = document.createElement("tr");
+        let hilera = document.createElement("tr");
         var istrue=false;
         
         for (var j = 0; j < 3; j++) {
-            var celda = document.createElement("td");
-            var textoCelda = document.createElement("p");
+            let celda = document.createElement("td");
+            let textoCelda = document.createElement("p");
             if(j==0)
             {
                 textoCelda.textContent = ""+(i+1);
@@ -126,11 +126,14 @@
  
         tblbody.appendChild(hilera);
         }
-        
-    })
 
-    var tblbody2 = document.getElementById("correlation");
-    for (var i = 0; i < list.length; i++) {
+
+        var tblbody2 = document.getElementById("correlation");
+        for (let i = 0; i < list.length; i++) {
+            list[i].mcc=(list[i].tp*list[i].tn - list[i].fp*list[i].fn)/Math.sqrt((list[i].tp+list[i].fp)*(list[i].tp+list[i].fn)*(list[i].tn+list[i].fp)*(list[i].tn+list[i].fn));
+        }
+        list.sort(function(a,b){return a.mcc < b.mcc});
+        for (var i = 0; i < list.length; i++) {
         var hilera = document.createElement("tr");
         for (var j = 0; j < 3; j++) {
             var celda = document.createElement("td");
@@ -144,10 +147,10 @@
             {
                 textoCelda.textContent = list[i].name;  
             }
-            if(j==3)
+            if(j==2)
             {
-                let mcc = (list[i].tp*list[i].tn - list[i].fp*list[i].fn)/Math.sqrt((list[i].tp+list[i].fp)(list[i].tp+list[i].fn)(list[i].tn+list[i].fp)*(list[i].tn+list[i].fn));
-                textoCelda.textContent = list[i].name;  
+
+                textoCelda.textContent = list[i].mcc;  
             }
 
             celda.appendChild(textoCelda);
@@ -156,6 +159,10 @@
 
         tblbody2.appendChild(hilera);
     }
+        
+    })
+
+    
 
     </script>
 </body>
