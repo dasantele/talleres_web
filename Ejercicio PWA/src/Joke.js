@@ -38,7 +38,7 @@ function Joke() {
     
     return (
         <div>
-            <h1>Joke</h1>
+            <h1>Heroes:</h1>
           <p>{joke.length} heroes</p>
           {joke.map((heroe) =>{
               return(
